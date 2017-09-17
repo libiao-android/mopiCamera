@@ -4,10 +4,10 @@
     <option name="defaultSettings" value="true" />
     <option name="formatter" value="ECLIPSE" />
     <option name="id" value="1495869298111" />
-    <option name="importOrderConfigFilePath" value="E:/libiao/work/代码规范/Meitu_1.0.importorder" />
+    <option name="importOrderConfigFilePath" value="$PROJECT_DIR$/../work/代码规范/Meitu_1.0.importorder" />
     <option name="importOrderFromFile" value="true" />
     <option name="name" value="default" />
-    <option name="pathToConfigFileJava" value="E:/libiao/work/代码规范/Meitu_CodeFormattet_1.1.7.xml" />
+    <option name="pathToConfigFileJava" value="$PROJECT_DIR$/../work/代码规范/Meitu_CodeFormattet_1.1.7.xml" />
     <option name="selectedJavaProfile" value="Meitu_CodeFormatter" />
   </component>
   <component name="EntryPointsManager">

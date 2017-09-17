@@ -22,6 +22,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.meitu.mopicamera.R;
+import com.meitu.mopicamera.policy.PathMaskManager;
 import com.meitu.mopicamera.util.BitmapUtil;
 import com.meitu.mopicamera.view.MoPiFunctionImageView;
 import com.meitu.mopicamera.view.MoPiSetttingView;
@@ -66,6 +67,7 @@ public class MoPiActivity extends AppCompatActivity implements MoPiFunctionImage
     private int mMoPiIvWidth;
     //ImageView控件的高
     private int mMoPiIvHeight;
+    private PathMaskManager mMaskManager;
     //表示根目录
     private String mRootPath = "/storage/emulated/0";
 
@@ -75,6 +77,11 @@ public class MoPiActivity extends AppCompatActivity implements MoPiFunctionImage
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN ,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mopi);
+        init();
+    }
+
+    private void init() {
+        mMaskManager = new PathMaskManager();
         initUI();
         initBounds();
         String photoUri = getIntent().getStringExtra(PHOTO_URI);
@@ -89,6 +96,7 @@ public class MoPiActivity extends AppCompatActivity implements MoPiFunctionImage
         mProgressBar = (ProgressBar)findViewById(R.id.pb_mopi_activity);
         mMoPiIv = (MoPiFunctionImageView) findViewById(R.id.iv_mo_pi_view);
         mMoPiIv.setPaintFinishCallback(this);
+        mMoPiIv.setPathMaskManager(mMaskManager);
         mWithdrawBtn = (Button) findViewById(R.id.btn_withdraw);
         mWithdrawBtn.setOnClickListener(mMoPiClickListener);
         mSettingBtn = (Button) findViewById(R.id.btn_setting);
@@ -167,7 +175,7 @@ public class MoPiActivity extends AppCompatActivity implements MoPiFunctionImage
      * 刷新按钮不可用状态
      */
     private void refreshBtnState() {
-        if(mMoPiIv.hasWithdrawCache()){
+        if(mMoPiIv.hasCachePath()){
             mWithdrawBtn.setEnabled(true);
             mEraserRb.setEnabled(true);
         }else{
@@ -227,7 +235,7 @@ public class MoPiActivity extends AppCompatActivity implements MoPiFunctionImage
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             if(bitmap != null){
-                mMoPiIv.setImageBitmap(bitmap);
+                mMoPiIv.initImageBitmap(bitmap);
                 mProgressBar.setVisibility(View.GONE);
             }
         }
@@ -269,7 +277,7 @@ public class MoPiActivity extends AppCompatActivity implements MoPiFunctionImage
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.btn_withdraw:
-                    mMoPiIv.withdraw();
+                    mMoPiIv.revokeOperation();
                     refreshBtnState();
                     break;
                 case R.id.btn_setting:
@@ -285,7 +293,7 @@ public class MoPiActivity extends AppCompatActivity implements MoPiFunctionImage
                         mSavePhotoTask = null;
                     }
                     mSavePhotoTask = new SavePhotoTask();
-                    mSavePhotoTask.execute(mMoPiIv.getLastMask());
+                    mSavePhotoTask.execute(mMaskManager.getLastMask());
                     break;
             }
         }
